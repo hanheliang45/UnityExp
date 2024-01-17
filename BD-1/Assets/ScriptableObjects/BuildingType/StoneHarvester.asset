@@ -18,3 +18,5 @@ MonoBehaviour:
   rgd:
     timerMax: 2
     resourceType: {fileID: 11400000, guid: 45f0ba131fd94824bbb7c12ff9042077, type: 2}
+    resourceDetectionRadius: 5
+    maxValidResourceAmount: 4

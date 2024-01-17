@@ -30,7 +30,6 @@ public class BuildingTypeSelectUI : MonoBehaviour
         arrowBtn.Find("Image").GetComponent<RectTransform>().sizeDelta = new Vector2 (50, 50);
         arrowBtn.GetComponent<Button>().onClick.AddListener(() => {
             BuildingManager.Instance.SetSelectedBuildingType(null);
-            UpdateButton();
         });
         arrowBtn.gameObject.SetActive(true);
 
@@ -42,8 +41,6 @@ public class BuildingTypeSelectUI : MonoBehaviour
             btn.GetComponent<RectTransform>().anchoredPosition = new Vector2((index +1) * 130, 0);
             btn.GetComponent<Button>().onClick.AddListener(() => { 
                 BuildingManager.Instance.SetSelectedBuildingType(buildingType);
-
-                UpdateButton();
             });
             btn.gameObject.SetActive(true);
 
@@ -51,6 +48,13 @@ public class BuildingTypeSelectUI : MonoBehaviour
 
             index++;
         }
+
+        BuildingManager.Instance.OnSelectBuildingType += BuildingManager_OnSelectBuildingType;
+    }
+
+    private void BuildingManager_OnSelectBuildingType(object sender, System.EventArgs e)
+    {
+        UpdateButton();
     }
 
     void UpdateButton()

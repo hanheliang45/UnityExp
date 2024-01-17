@@ -45,7 +45,6 @@ public class ResourcesUI : MonoBehaviour
     void UpdateResourceAmount(ResourceTypeSO resourceType)
     {
         int resourceAmount = ResourceManager.Instance.GetResourceAmount(resourceType);
-        Debug.Log("Resource Amount: " + resourceAmount);
         resourceElementMap[resourceType].Find("Text").GetComponent<TextMeshProUGUI>().text
                    = resourceAmount.ToString();
     }
