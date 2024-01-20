@@ -10,16 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62dd1c7ab3407ff40b7b02c7f95c7c6c, type: 3}
-  m_Name: WoodHarvester
+  m_Name: HQ
   m_EditorClassIdentifier: 
-  nameString: Wood Harvester
-  prefab: {fileID: 1596593701181163465, guid: a6c5904d655eee7498d8efde1b48b7d1, type: 3}
-  renderSprite: {fileID: 21300000, guid: 793ca27a5a3378149aaa12abe85933f4, type: 3}
+  nameString: HQ
+  prefab: {fileID: 1596593701181163465, guid: 413ecfda515b7b84eafd6410060cdf45, type: 3}
+  renderSprite: {fileID: 21300000, guid: 7030b8e3eb49e8440ae8eb3ec8b45d05, type: 3}
   rgd:
     timerMax: 1
     resourceType: {fileID: 11400000, guid: 9e2560046c721b14f958aad3fc0f4bb7, type: 2}
     resourceDetectionRadius: 8
     maxValidResourceAmount: 10
-  rcArray:
-  - resourceType: {fileID: 11400000, guid: 9e2560046c721b14f958aad3fc0f4bb7, type: 2}
-    cost: 20

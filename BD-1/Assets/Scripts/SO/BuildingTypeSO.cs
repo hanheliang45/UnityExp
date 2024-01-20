@@ -10,4 +10,5 @@ public class BuildingTypeSO : ScriptableObject
     public Sprite renderSprite;
 
     public ResourceGeneratorData rgd;
+    public ResourceCost[] rcArray;
 }

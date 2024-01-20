@@ -7,10 +7,13 @@ public class BuildingGhost : MonoBehaviour
 {
     private GameObject sprite;
     private bool isShow;
+    private ResourceNearby resourceNearby;
+    private BuildingTypeSO buildingType;
 
     void Start()
     {
         sprite = this.transform.Find("Sprite").gameObject;
+        resourceNearby = this.transform.Find("ResourceNearby").GetComponent<ResourceNearby>();
 
         Hide();
 
@@ -19,7 +22,7 @@ public class BuildingGhost : MonoBehaviour
 
     private void BuildingManager_OnSelectBuildingType(object sender, System.EventArgs e)
     {
-        BuildingTypeSO buildingType = BuildingManager.Instance.GetSelectedBuildingType();
+        buildingType = BuildingManager.Instance.GetSelectedBuildingType();
         if (buildingType == null)
         {
             Hide();
@@ -36,8 +39,10 @@ public class BuildingGhost : MonoBehaviour
         if (isShow)
         {
             this.transform.position = Tools.GetMouseWorldPosition();
+            int nodeNumber = ResourceGenerator.GetNearbyResourceNodeNumber(
+                this.transform.position, buildingType.rgd);
+            resourceNearby.Show(buildingType.rgd, nodeNumber);
         }
-        
     }
 
     void Show(Sprite ghostSprite)

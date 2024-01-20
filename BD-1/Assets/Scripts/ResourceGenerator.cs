@@ -16,26 +16,34 @@ public class ResourceGenerator : MonoBehaviour
         this.timerMax = buildingType.rgd.timerMax;
     }
 
-    private void Start()
+    public static int GetNearbyResourceNodeNumber
+        (
+        Vector3 position, 
+        ResourceGeneratorData rgd
+        )
     {
-        float resourceDetectionRadius = this.buildingType.rgd.resourceDetectionRadius;
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, resourceDetectionRadius);
+        float resourceDetectionRadius = rgd.resourceDetectionRadius;
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(position, resourceDetectionRadius);
 
         int resourceNodeNumber = 0;
         foreach (Collider2D collider in colliders)
         {
             if (collider.TryGetComponent<ResourceNode>(out ResourceNode rn))
             {
-                if (rn.getResourceType() == this.buildingType.rgd.resourceType)
+                if (rn.getResourceType() == rgd.resourceType)
                 {
                     resourceNodeNumber++;
                 }
             }
         }
 
-        this.nearbyResourceAmount = Mathf.Clamp(resourceNodeNumber, 0, this.buildingType.rgd.maxValidResourceAmount);
+        return Mathf.Clamp(resourceNodeNumber, 0, rgd.maxValidResourceAmount);
+    }
 
-        Debug.Log("nearbyResourceAmount:" + this.nearbyResourceAmount);
+    private void Start()
+    {
+        this.nearbyResourceAmount = GetNearbyResourceNodeNumber(this.transform.position, this.buildingType.rgd);
+
         if (this.nearbyResourceAmount == 0)
         {
             this.enabled = false;
@@ -57,5 +65,20 @@ public class ResourceGenerator : MonoBehaviour
 
             ResourceManager.Instance.AddResource(buildingType.rgd.resourceType, 1);
         }
+    }
+
+    public BuildingTypeSO GetBuildingType()
+    {
+        return this.buildingType;
+    }
+
+    public float GetGenerationNormalized()
+    {
+        return timer / timerMax;
+    }
+
+    public float GetMaxTime()
+    {
+        return this.timerMax;
     }
 }

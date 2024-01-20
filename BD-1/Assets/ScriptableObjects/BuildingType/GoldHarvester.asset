@@ -20,3 +20,8 @@ MonoBehaviour:
     resourceType: {fileID: 11400000, guid: 2a403cc2eff073341984d1c75182a8c7, type: 2}
     resourceDetectionRadius: 6
     maxValidResourceAmount: 3
+  rcArray:
+  - resourceType: {fileID: 11400000, guid: 9e2560046c721b14f958aad3fc0f4bb7, type: 2}
+    cost: 50
+  - resourceType: {fileID: 11400000, guid: 45f0ba131fd94824bbb7c12ff9042077, type: 2}
+    cost: 50

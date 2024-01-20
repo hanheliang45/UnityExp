@@ -26,10 +26,25 @@ public class ResourceManager : MonoBehaviour
         Debug.Log("resourceAmountDictionary " + resourceAmountDictionary.Count);
     }
 
-    // Update is called once per frame
-    void Update()
+    public bool CanAfford(BuildingTypeSO buildingType)
     {
-        
+        foreach (ResourceCost rc in buildingType.rcArray)
+        {
+            if (resourceAmountDictionary[rc.resourceType] < rc.cost)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void SpendResource(BuildingTypeSO buildingType)
+    {
+        foreach (ResourceCost rc in buildingType.rcArray)
+        {
+            resourceAmountDictionary[rc.resourceType] -= rc.cost;
+            OnAddResource?.Invoke(this, rc.resourceType);
+        }
     }
 
     public void AddResource(ResourceTypeSO resourceType, int amount)

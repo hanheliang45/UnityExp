@@ -10,14 +10,12 @@ public class BuildingManager : MonoBehaviour
 
     public event EventHandler OnSelectBuildingType;
 
-    private BuildingTypeListSO btList;
-
     private BuildingTypeSO selectedBuildingType;
+
     private void Awake()
     {
         Instance = this;
 
-        btList = Resources.Load<BuildingTypeListSO>(typeof(BuildingTypeListSO).Name);
     }
 
     // Update is called once per frame
@@ -31,10 +29,22 @@ public class BuildingManager : MonoBehaviour
         {
             return;
         }
-        if (Input.GetMouseButtonDown(0))
+        if (!Input.GetMouseButtonDown(0))
         {
-            Instantiate(selectedBuildingType.prefab, Tools.GetMouseWorldPosition(), Quaternion.identity);
+            return;
         }
+        Vector3 mousePosition = Tools.GetMouseWorldPosition();
+        if (!CanBuild(selectedBuildingType, mousePosition))
+        {
+            return;
+        }
+        if (!ResourceManager.Instance.CanAfford(selectedBuildingType))
+        {
+            return;
+        }
+
+        ResourceManager.Instance.SpendResource(selectedBuildingType);
+        Instantiate(selectedBuildingType.prefab, mousePosition, Quaternion.identity);
     }
 
 
@@ -48,5 +58,44 @@ public class BuildingManager : MonoBehaviour
     public BuildingTypeSO GetSelectedBuildingType()
     {
         return this.selectedBuildingType;
+    }
+
+    private bool CanBuild(BuildingTypeSO buildingType, Vector3 position)
+    {
+        BoxCollider2D boxCollider2D = buildingType.prefab.GetComponent<BoxCollider2D>();
+
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(
+            (Vector2)position + boxCollider2D.offset, boxCollider2D.size, 0);
+
+        bool isAreaClear = colliders.Length == 0;
+        if (!isAreaClear)
+        {
+            return false;
+        }
+
+        float minRadius = 8f;
+        colliders = Physics2D.OverlapCircleAll(position, minRadius);
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.TryGetComponent<BuildingTypeHolder>(out BuildingTypeHolder holder))
+            {
+                if (holder.GetBuildingTypeSO() == buildingType)
+                {
+                    return false;
+                }
+            }
+        }
+
+        float maxRadius = 40f;
+        colliders = Physics2D.OverlapCircleAll(position, maxRadius);
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.TryGetComponent<BuildingTypeHolder>(out BuildingTypeHolder holder))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
