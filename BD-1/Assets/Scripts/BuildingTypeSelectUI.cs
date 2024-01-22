@@ -31,6 +31,13 @@ public class BuildingTypeSelectUI : MonoBehaviour
         arrowBtn.GetComponent<Button>().onClick.AddListener(() => {
             BuildingManager.Instance.SetSelectedBuildingType(null);
         });
+        MouseEnterExitEvent mouseEvent = arrowBtn.GetComponent<MouseEnterExitEvent>();
+        mouseEvent.OnMouseEnter += (a, b) => {
+            ToolTipUI.Instance.Show("Arrow");
+        };
+        mouseEvent.OnMouseExit += (a, b) => {
+            ToolTipUI.Instance.Hide();
+        };
         arrowBtn.gameObject.SetActive(true);
 
         int index = 0;
@@ -42,6 +49,13 @@ public class BuildingTypeSelectUI : MonoBehaviour
             btn.GetComponent<Button>().onClick.AddListener(() => { 
                 BuildingManager.Instance.SetSelectedBuildingType(buildingType);
             });
+            mouseEvent = btn.GetComponent<MouseEnterExitEvent>();
+            mouseEvent.OnMouseEnter += (a, b) => {
+                ToolTipUI.Instance.Show(buildingType.nameString);
+            };
+            mouseEvent.OnMouseExit += (a, b) => {
+                ToolTipUI.Instance.Hide();
+            };
             btn.gameObject.SetActive(true);
 
             buttonDictionary[buildingType] = btn;
@@ -50,6 +64,11 @@ public class BuildingTypeSelectUI : MonoBehaviour
         }
 
         BuildingManager.Instance.OnSelectBuildingType += BuildingManager_OnSelectBuildingType;
+    }
+
+    private void MouseEvent_OnMouseEnter(object sender, System.EventArgs e)
+    {
+        throw new System.NotImplementedException();
     }
 
     private void BuildingManager_OnSelectBuildingType(object sender, System.EventArgs e)
