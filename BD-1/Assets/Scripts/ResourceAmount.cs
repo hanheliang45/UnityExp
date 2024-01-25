@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class ResourceCost
+public class ResourceAmount
 {
     public ResourceTypeSO resourceType;
-    public int cost;
+    public int amount;
 }

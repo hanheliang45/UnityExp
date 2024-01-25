@@ -8,6 +8,8 @@ public class BuildingManager : MonoBehaviour
 {
     public static BuildingManager Instance;
 
+    [SerializeField] private Building hqBuilding;
+
     public event EventHandler OnSelectBuildingType;
 
     private BuildingTypeSO selectedBuildingType;
@@ -34,12 +36,15 @@ public class BuildingManager : MonoBehaviour
             return;
         }
         Vector3 mousePosition = Tools.GetMouseWorldPosition();
-        if (!CanBuild(selectedBuildingType, mousePosition))
+        if (!CanBuild(selectedBuildingType, mousePosition, out string errorMsg))
         {
+            ToolTipUI.Instance.Show(errorMsg, new ToolTipUI.TooltipTimer { timer = 2f });
             return;
         }
         if (!ResourceManager.Instance.CanAfford(selectedBuildingType))
         {
+            ToolTipUI.Instance.Show("you can not affort!",
+                new ToolTipUI.TooltipTimer { timer = 2f});
             return;
         }
 
@@ -60,7 +65,8 @@ public class BuildingManager : MonoBehaviour
         return this.selectedBuildingType;
     }
 
-    private bool CanBuild(BuildingTypeSO buildingType, Vector3 position)
+    private bool CanBuild(BuildingTypeSO buildingType, Vector3 position,
+                        out string errorMessage)
     {
         BoxCollider2D boxCollider2D = buildingType.prefab.GetComponent<BoxCollider2D>();
 
@@ -70,17 +76,18 @@ public class BuildingManager : MonoBehaviour
         bool isAreaClear = colliders.Length == 0;
         if (!isAreaClear)
         {
+            errorMessage = "overlap with other object";
             return false;
         }
 
-        float minRadius = 8f;
-        colliders = Physics2D.OverlapCircleAll(position, minRadius);
+        colliders = Physics2D.OverlapCircleAll(position, buildingType.sameTypeDistance);
         foreach (Collider2D collider in colliders)
         {
             if (collider.TryGetComponent<BuildingTypeHolder>(out BuildingTypeHolder holder))
             {
                 if (holder.GetBuildingTypeSO() == buildingType)
                 {
+                    errorMessage = "too close buidling with same type";
                     return false;
                 }
             }
@@ -92,10 +99,17 @@ public class BuildingManager : MonoBehaviour
         {
             if (collider.TryGetComponent<BuildingTypeHolder>(out BuildingTypeHolder holder))
             {
+                errorMessage = "";
                 return true;
             }
         }
 
+        errorMessage = "too far away with other buildings";
         return false;
+    }
+
+    public Building GetHQBuilding()
+    {
+        return this.hqBuilding;
     }
 }

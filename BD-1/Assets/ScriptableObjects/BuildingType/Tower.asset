@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62dd1c7ab3407ff40b7b02c7f95c7c6c, type: 3}
-  m_Name: GoldHarvester
+  m_Name: Tower
   m_EditorClassIdentifier: 
-  nameString: Gold Harvester
-  prefab: {fileID: 1596593701181163465, guid: 9206a11ead3267449804b4107d20f6ec, type: 3}
-  renderSprite: {fileID: 21300000, guid: 8ead931dd91bff8489e75de9c414f17f, type: 3}
+  nameString: Tower
+  prefab: {fileID: 1596593701181163465, guid: 0e6f4e827381f344a98546aae27f86fc, type: 3}
+  renderSprite: {fileID: 21300000, guid: 3a549cd61f4d79e4b996c9978dac641f, type: 3}
   HP: 100
-  sameTypeDistance: 8
+  sameTypeDistance: 0
   rgd:
-    timerMax: 3
-    resourceType: {fileID: 11400000, guid: 2a403cc2eff073341984d1c75182a8c7, type: 2}
-    resourceDetectionRadius: 6
-    maxValidResourceAmount: 3
+    timerMax: 0
+    resourceType: {fileID: 0}
+    resourceDetectionRadius: 0
+    maxValidResourceAmount: 0
   rcArray:
   - resourceType: {fileID: 11400000, guid: 9e2560046c721b14f958aad3fc0f4bb7, type: 2}
-    amount: 50
+    amount: 10
   - resourceType: {fileID: 11400000, guid: 45f0ba131fd94824bbb7c12ff9042077, type: 2}
-    amount: 50
+    amount: 10

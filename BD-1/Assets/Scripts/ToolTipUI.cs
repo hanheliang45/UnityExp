@@ -11,6 +11,7 @@ public class ToolTipUI : MonoBehaviour
     [SerializeField] private RectTransform canvasRect;
     private RectTransform backgroundRect;
     private TextMeshProUGUI textMeshPro;
+    private TooltipTimer timer;
 
     private RectTransform uiRect;
 
@@ -27,6 +28,21 @@ public class ToolTipUI : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        HandleFollowMouse();
+
+        if (timer != null)
+        {
+            timer.timer -= Time.deltaTime;
+            if (timer.timer <= 0)
+            {
+                Hide();
+                timer = null;
+            }
+        }
+    }
+
+    void HandleFollowMouse()
     {
         Vector2 anchoredPosition = Input.mousePosition / canvasRect.localScale.x;
 
@@ -52,14 +68,21 @@ public class ToolTipUI : MonoBehaviour
         backgroundRect.sizeDelta = textSize + new Vector2(10, 10);
     }
 
-    public void Show(string tip)
+    public void Show(string tip, TooltipTimer timer = null)
     {
         SetText(tip);
+        this.timer = timer;
         this.gameObject.SetActive(true);
+        HandleFollowMouse();
     }
 
     public void Hide()
     {
         this.gameObject.SetActive(false);
+    }
+
+    public class TooltipTimer
+    {
+        public float timer;
     }
 }

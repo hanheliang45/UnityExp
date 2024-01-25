@@ -41,7 +41,10 @@ public class BuildingGhost : MonoBehaviour
             this.transform.position = Tools.GetMouseWorldPosition();
             int nodeNumber = ResourceGenerator.GetNearbyResourceNodeNumber(
                 this.transform.position, buildingType.rgd);
-            resourceNearby.Show(buildingType.rgd, nodeNumber);
+            if (buildingType.rgd.resourceType != null)
+            { 
+                resourceNearby.Show(buildingType.rgd, nodeNumber);
+            }
         }
     }
 

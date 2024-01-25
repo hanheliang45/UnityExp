@@ -15,6 +15,8 @@ MonoBehaviour:
   nameString: Wood Harvester
   prefab: {fileID: 1596593701181163465, guid: a6c5904d655eee7498d8efde1b48b7d1, type: 3}
   renderSprite: {fileID: 21300000, guid: 793ca27a5a3378149aaa12abe85933f4, type: 3}
+  HP: 100
+  sameTypeDistance: 8
   rgd:
     timerMax: 1
     resourceType: {fileID: 11400000, guid: 9e2560046c721b14f958aad3fc0f4bb7, type: 2}
@@ -22,4 +24,4 @@ MonoBehaviour:
     maxValidResourceAmount: 10
   rcArray:
   - resourceType: {fileID: 11400000, guid: 9e2560046c721b14f958aad3fc0f4bb7, type: 2}
-    cost: 20
+    amount: 80
