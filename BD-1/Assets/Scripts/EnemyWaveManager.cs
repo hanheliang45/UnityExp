@@ -43,6 +43,11 @@ public class EnemyWaveManager : MonoBehaviour
         OnWaveChange?.Invoke(this, waveNumber);
     }
 
+    public Vector3 GetSpawnPosition()
+    {
+        return spawnPosition;
+    }
+
     void Update()
     {
         switch (state)
