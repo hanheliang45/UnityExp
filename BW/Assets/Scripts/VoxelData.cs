@@ -4,8 +4,11 @@ using UnityEngine;
 
 public static class VoxelData
 {
-    public static readonly int CHUNK_WIDTH = 5;
-    public static readonly int CHUNK_HEIGHT = 5;
+
+    public static readonly int VIEW_DISTANCE_IN_CHUNKS = 10;
+
+    public static readonly int TEXTURE_SIZE_IN_BLOCKS = 4;
+    public static readonly float TEXTURE_SIZE_NORMALIZED = 1f / TEXTURE_SIZE_IN_BLOCKS;
 
     public static readonly Vector3[] VOXEL_VERTS = new Vector3[8] { 
         new Vector3 (0, 0, 0),
@@ -19,6 +22,7 @@ public static class VoxelData
     };
 
     public static readonly int[,] VOXEL_TRIANGLES = new int[6,4] {
+        // back, right, forward, left, top, bottom
         { 0,3,1,2}, // back
         { 1,2,5,6}, // right
         { 5,6,4,7}, // forward
@@ -27,12 +31,12 @@ public static class VoxelData
         { 0,1,4,5}  // bottom
     };
 
-    public static readonly Vector2[] VOXEL_UVS = new Vector2[4] {
-            new Vector2(0, 0),
-            new Vector2(0, 1),
-            new Vector2(1, 0),
-            new Vector2(1, 1)
-    };
+    //public static readonly Vector2[] VOXEL_UVS = new Vector2[4] {
+    //        new Vector2(0, 0),
+    //        new Vector2(0, 1),
+    //        new Vector2(1, 0),
+    //        new Vector2(1, 1)
+    //};
 
     public static readonly Vector3[] FACE_CHECKS = new Vector3[6]{
         new Vector3(0, 0, -1),
