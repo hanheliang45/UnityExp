@@ -32,6 +32,7 @@ public class Chunk
     GameObject chunkGO;
     MeshRenderer meshRenderer;
     MeshFilter meshFilter;
+
     World world;
 
     List<Vector3> vertices = new List<Vector3>();
@@ -39,7 +40,7 @@ public class Chunk
     List<Vector2> uvs = new List<Vector2>();
     int vertIndex = 0;
 
-    byte[,,] voxelMap = new byte[
+    public byte[,,] voxelMap = new byte[
         CHUNK_WIDTH,
         CHUNK_HEIGHT,
         CHUNK_WIDTH];

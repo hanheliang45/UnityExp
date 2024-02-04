@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    public static readonly int WORLD_SIZE_CHUNK = 30;
+    public static readonly int WORLD_SIZE_CHUNK = 200;
 
     public static readonly int SEED = 12345678;
 
@@ -32,7 +32,7 @@ public class World : MonoBehaviour
         UnityEngine.Random.InitState(SEED);
 
         playerSpawnPosition = new Vector3(
-            WORLD_SIZE_CHUNK * Chunk.CHUNK_WIDTH / 2, 2,
+            WORLD_SIZE_CHUNK * Chunk.CHUNK_WIDTH / 2, Chunk.CHUNK_HEIGHT - 50,
             WORLD_SIZE_CHUNK * Chunk.CHUNK_WIDTH / 2);
         playerLastCC = GetChunkCoordFromVector3(playerSpawnPosition);
 
@@ -45,17 +45,18 @@ public class World : MonoBehaviour
 
     private void Update()
     {
-        refreshTimer += Time.deltaTime;
-        if (refreshTimer >= refreshTimerMax 
-            && !playerLastCC.Equals(GetChunkCoordFromVector3(player.position)))
-        {
-            refreshTimer = 0;
-            CheckViewDistance();
-        }
+        //refreshTimer += Time.deltaTime;
+        //if (refreshTimer >= refreshTimerMax 
+        //    && !playerLastCC.Equals(GetChunkCoordFromVector3(player.position)))
+        //{
+        //    refreshTimer = 0;
+        //    CheckViewDistance();
+        //}
 
-        playerLastCC = GetChunkCoordFromVector3(player.position);
+        //playerLastCC = GetChunkCoordFromVector3(player.position);
 
     }
+
 
     void GenerateWorld()
     {
@@ -138,6 +139,33 @@ public class World : MonoBehaviour
         chunks[x, z] = new Chunk(this, cc);
 
         activeChunks.Add(cc);
+    }
+
+
+    public bool CheckForVoxel(float x, float y, float z)
+    {
+        int i_x = Mathf.FloorToInt(x);
+        int i_y = Mathf.FloorToInt(y);
+        int i_z = Mathf.FloorToInt(z);
+
+        if (!isVoxelInWorld(new Vector3(x, y, z)))
+        {
+            return false;
+        }
+
+        int xChunk = i_x / Chunk.CHUNK_WIDTH;
+        int zChunk = i_z / Chunk.CHUNK_WIDTH;
+
+        Chunk chunk = chunks[xChunk, zChunk];
+        if (chunk == null)
+        {
+            return false;
+        }
+        int xVoxel = i_x % Chunk.CHUNK_WIDTH;
+        int zVoxel = i_z % Chunk.CHUNK_WIDTH;
+
+        byte blockTypeIndex = chunk.voxelMap[xVoxel, i_y, zVoxel];
+        return blockTypes[blockTypeIndex].isSolid;
     }
 
     public byte GetBlockType(Vector3 voxelPosition)
