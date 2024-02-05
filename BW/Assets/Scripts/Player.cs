@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
     private float mouseHorizontal;
     private float mouseVertical;
     private Vector3 velocity;
-    private float veticalMomentum = 0;
+    private float verticalMomentum = 0;
     private bool jumpRequest;
 
     private bool isGround = true;
@@ -35,16 +35,77 @@ public class Player : MonoBehaviour
     {
         GetPlayerInputs();
 
-        velocity = transform.forward * vertical + transform.right * horizontal;
-        velocity += Vector3.down * gravity * Time.deltaTime * 5;
-        float original_y = velocity.y;
-        velocity.y = checkDownSpeed(velocity.y);
-        Debug.Log("original_y:" + original_y + " new " + velocity.y);
+        Jump();
+
+        CalculateVelocity();
+        transform.Translate(velocity * Time.deltaTime * moveSpeed, Space.World);
 
         transform.Rotate(Vector3.up * mouseHorizontal * 3);
         cam.Rotate(Vector3.right * -mouseVertical * 3);
 
-        transform.Translate(velocity * Time.deltaTime * moveSpeed, Space.World);
+    }
+
+    private void FixedUpdate()
+    {
+        
+    }
+
+    void Jump()
+    {
+        if (!jumpRequest)
+        {
+            return;
+        }
+        jumpRequest = false;
+
+        isGround = false;
+        verticalMomentum = jumpForce;
+    }
+
+    void CalculateVelocity()
+    {
+        velocity = transform.forward * vertical + transform.right * horizontal;
+        velocity += Vector3.down * gravity * Time.deltaTime * 5;
+        float original_y = velocity.y;
+        velocity.y = checkDownSpeed(velocity.y);
+
+
+        if (verticalMomentum > -gravity)
+        {
+            verticalMomentum -= Time.fixedDeltaTime * gravity;
+        }
+
+        velocity = (transform.forward * vertical + transform.right * horizontal)
+                * Time.fixedDeltaTime 
+                * (isSprinting ? sprintSpeed : moveSpeed);
+
+        velocity += Vector3.up * verticalMomentum * Time.fixedDeltaTime;
+
+        if (velocity.z > 0 && checkFront(true))
+        {
+            velocity.z = 0;
+        }
+        if (velocity.z < 0 && checkFront(false))
+        {
+            velocity.z = 0;
+        }
+        if (velocity.x > 0 && checkRight(true))
+        {
+            velocity.x = 0;
+        }
+        if (velocity.x < 0 && checkRight(false))
+        {
+            velocity.x = 0;
+        }
+        if (velocity.y > 0)
+        {
+            velocity.y = checkUpSpeed(velocity.y);
+        }
+        if (velocity.y < 0)
+        {
+            velocity.y = checkDownSpeed(velocity.y);
+        }
+
     }
 
     void GetPlayerInputs()
@@ -72,37 +133,75 @@ public class Player : MonoBehaviour
 
     float checkDownSpeed(float downSpeed)
     {
-        if (world.CheckForVoxel(transform.position.x, 
-            transform.position.y + downSpeed, transform.position.z))
-        {
-            isGround = true;
-            return 0;
-        }
         if (world.CheckForVoxel(transform.position.x - playerWidth,
-            transform.position.y + downSpeed, transform.position.z - playerWidth))
-        {
-            isGround = true;
-            return 0;
-        }
-        if (world.CheckForVoxel(transform.position.x + playerWidth,
-            transform.position.y + downSpeed, transform.position.z - playerWidth))
-        {
-            isGround = true;
-            return 0;
-        }
-        if (world.CheckForVoxel(transform.position.x - playerWidth,
+            transform.position.y + downSpeed, transform.position.z - playerWidth) ||
+            world.CheckForVoxel(transform.position.x + playerWidth,
+            transform.position.y + downSpeed, transform.position.z - playerWidth) ||
+            world.CheckForVoxel(transform.position.x - playerWidth,
+            transform.position.y + downSpeed, transform.position.z + playerWidth) ||
+            world.CheckForVoxel(transform.position.x + playerWidth,
             transform.position.y + downSpeed, transform.position.z + playerWidth))
         {
             isGround = true;
             return 0;
         }
-        if (world.CheckForVoxel(transform.position.x + playerWidth,
-            transform.position.y + downSpeed, transform.position.z + playerWidth))
-        {
-            isGround = true;
-            return 0;
-        }
+       
         isGround = false;
         return downSpeed;
+    }
+
+    float checkUpSpeed(float upSpeed)
+    {
+        if (world.CheckForVoxel(transform.position.x - playerWidth,
+                transform.position.y + 2f + upSpeed, transform.position.z - playerWidth) ||
+            world.CheckForVoxel(transform.position.x + playerWidth,
+                transform.position.y + 2f + upSpeed, transform.position.z - playerWidth) ||
+            world.CheckForVoxel(transform.position.x - playerWidth,
+                transform.position.y + 2f + upSpeed, transform.position.z + playerWidth) ||
+            world.CheckForVoxel(transform.position.x + playerWidth,
+                transform.position.y + 2f + upSpeed, transform.position.z + playerWidth))
+        {
+            return 0;
+        }
+
+        return upSpeed;
+    }
+
+    bool checkFront(bool isFront)
+    {
+        int frontOrBack = isFront ? 1 : -1;
+        if (
+            world.CheckForVoxel(transform.position.x - playerWidth,
+                transform.position.y , transform.position.z + playerWidth * frontOrBack) ||
+            world.CheckForVoxel(transform.position.x + playerWidth,
+                transform.position.y, transform.position.z + playerWidth * frontOrBack) ||
+            world.CheckForVoxel(transform.position.x - playerWidth,
+                transform.position.y + 1f, transform.position.z + playerWidth * frontOrBack) ||
+            world.CheckForVoxel(transform.position.x + playerWidth,
+                transform.position.y + 1f, transform.position.z + playerWidth * frontOrBack)
+            )
+        {
+            return true;
+        }
+        return false;
+    }
+
+    bool checkRight(bool isRight)
+    {
+        int rightOrLeft = isRight ? 1 : -1;
+        if (
+            world.CheckForVoxel(transform.position.x + playerWidth * rightOrLeft,
+                transform.position.y, transform.position.z + playerWidth) ||
+            world.CheckForVoxel(transform.position.x + playerWidth * rightOrLeft,
+                transform.position.y, transform.position.z - playerWidth) ||
+            world.CheckForVoxel(transform.position.x + playerWidth * rightOrLeft,
+                transform.position.y + 1f, transform.position.z + playerWidth) ||
+            world.CheckForVoxel(transform.position.x + playerWidth * rightOrLeft,
+                transform.position.y + 1f, transform.position.z - playerWidth)
+            )
+        {
+            return true;
+        }
+        return false;
     }
 }
